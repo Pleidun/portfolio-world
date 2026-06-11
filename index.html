@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/ui.css" />
+</head>
+<body>
+
+  <div id="loader">
+    <div class="loader-inner">
+      <div class="loader-name">Loading</div>
+      <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
+    </div>
+  </div>
+
+  <canvas id="c"></canvas>
+
+  <!-- Floating proximity markers — positioned via JS world-to-screen projection -->
+  <div id="proximity-markers"></div>
+
+  <div id="hud"></div>
+
+  <!-- skip moved to center -->
+  <button id="skip-btn">Skip to Portfolio →</button>
+  <div id="progress-tracker"></div>
+
+  <!-- Tutorial overlay — shown at start, dismissed on first click -->
+  <div id="tutorial-overlay">
+    <div id="tutorial-box">
+      <div class="tut-title">How to Play</div>
+      <div class="tut-objective">
+        You are a Program Manager. Collect the three resources scattered across the world —
+        <strong>People</strong>, <strong>Budget</strong>, and <strong>Time</strong> —
+        then bring them to each project phase to activate it.
+        Complete all five phases to unlock the full portfolio.
+      </div>
+      <div class="tut-divider"></div>
+      <div class="tut-controls">
+        <div class="tut-control">
+          <span class="tut-key">Click or hold</span>
+          <span class="tut-desc">Move your character</span>
+        </div>
+        <div class="tut-control">
+          <span class="tut-key">Walk over orb</span>
+          <span class="tut-desc">Auto-collect 👤 💰 ⏱</span>
+        </div>
+        <div class="tut-control">
+          <span class="tut-key">Near a phase</span>
+          <span class="tut-desc">Deposit panel appears at center</span>
+        </div>
+      </div>
+      <div class="tut-hint">Click anywhere to begin →</div>
+    </div>
+  </div>
+
+  <div id="backpack">
+    <div class="bp-header">
+      <span class="bp-title">📦 Resources</span>
+      <span class="bp-count" id="bp-count">0 items</span>
+    </div>
+    <div id="backpack-grid"></div>
+  </div>
+
+  <div id="phase-panel" class="hidden"></div>
+
+  <button id="sound-toggle" aria-label="Toggle sound" title="Toggle sound">
+    <svg id="icon-sound-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/>
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>
+    </svg>
+    <svg id="icon-sound-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none">
+      <polygon points="11,5 6,9 2,9 2,15 6,15 11,19"/>
+      <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+    </svg>
+  </button>
+
+  <div id="portfolio-reveal" class="hidden">
+    <div id="portfolio-inner">
+      <button id="portfolio-close">✕ Return to World</button>
+      <div class="pf-hero">
+        <div class="pf-name">Jun Bae</div>
+        <div class="pf-role">Program Manager</div>
+        <div class="pf-tagline">Thank you for playing through a slice of my passion. Here is a little bit about myself.</div>
+      </div>
+      <div class="pf-sections">
+        <div class="pf-section">
+          <div class="pf-section-label">About</div>
+          <div class="pf-section-body">
+            <p>I'm a Program Manager with over 10 years of experience working across tech, game development, VR, and social media. I've shipped products at Ubisoft, Facebook, and on my own.</p>
+            <p>I am passionate about technology and team projects. Most of my career has been spent keeping teams of engineers, artists, and designers moving in the same direction.</p>
+          </div>
+        </div>
+        <div class="pf-section">
+          <div class="pf-section-label">Career</div>
+          <div class="pf-section-body">
+            <div class="timeline">
+              <div class="tl-item">
+                <div class="tl-year">Feb 2025 – Present</div>
+                <div class="tl-role">Project Lead / Game Developer</div>
+                <div class="tl-company">Mazeweaver</div>
+                <div class="tl-desc">Designing and building Mindrazer, a top-down roguelite action game on Steam. Handling everything from gameplay systems and level design to QA, marketing, and release planning.</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-year">Dec 2021 – Feb 2025</div>
+                <div class="tl-role">Program Manager</div>
+                <div class="tl-company">Ubisoft</div>
+                <div class="tl-desc">Cross-functional PM for XDefiant across engineering, art, design, and QA from pre-production through live-service seasonal releases. Drove over $500K in annual cost savings by improving release workflows and build processes.</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-year">Mar 2019 – Jun 2021</div>
+                <div class="tl-role">QA Program Manager</div>
+                <div class="tl-company">Facebook</div>
+                <div class="tl-desc">Supported launch readiness for Oculus Rift S, Quest, and Quest 2. Managed 250+ bugs across 5 concurrent projects and developed 500+ test scenarios covering functional, regression, and localization testing.</div>
+              </div>
+              <div class="tl-item">
+                <div class="tl-year">Aug 2018 – Feb 2019</div>
+                <div class="tl-role">Partner Manager</div>
+                <div class="tl-company">Facebook</div>
+                <div class="tl-desc">Managed relationships with 250+ video creators and media publishers in Facebook's Launchpad program, helping partners grow audiences and monetize content on the platform.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pf-section">
+          <div class="pf-section-label">Skills</div>
+          <div class="pf-section-body">
+            <div class="skills-grid">
+              <div class="skill-group">
+                <div class="skill-group-title">Project Management</div>
+                <div class="skill-list">Agile · Scrum · Jira · Trello · Miro · Shotgrid</div>
+              </div>
+              <div class="skill-group">
+                <div class="skill-group-title">Data & Analytics</div>
+                <div class="skill-list">SQL · Excel · SPSS</div>
+              </div>
+              <div class="skill-group">
+                <div class="skill-group-title">Game Development</div>
+                <div class="skill-list">Unity · C# · Blender</div>
+              </div>
+              <div class="skill-group">
+                <div class="skill-group-title">Design & Video</div>
+                <div class="skill-list">Adobe Creative Suite · Figma</div>
+              </div>
+              <div class="skill-group">
+                <div class="skill-group-title">Languages</div>
+                <div class="skill-list">English (fluent) · Korean (fluent)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="pf-section">
+          <div class="pf-section-label">Contact</div>
+          <div class="pf-section-body">
+            <div class="contact-links">
+              <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#112;&#108;&#101;&#105;&#100;&#117;&#110;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" class="contact-link"><span class="contact-icon">✉</span> Email</a>
+              <a href="https://www.linkedin.com/in/jun-b-b8627940/" target="_blank" class="contact-link"><span class="contact-icon">◈</span> LinkedIn</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.163.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.163.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
