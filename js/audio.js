@@ -75,16 +75,24 @@ export class AudioSystem {
     source.start(0);
   }
 
-  _applyMute() {
-    if (this.audio)   this.audio.volume   = this.muted ? 0 : this.volume * 0.7;
-    if (this.ambient) this.ambient.volume = this.muted ? 0 : this.volume * 0.4;
-    const on  = document.getElementById('icon-sound-on');
-    const off = document.getElementById('icon-sound-off');
-    const btn = document.getElementById('sound-toggle');
-    if (on)  on.style.display  = this.muted ? 'none' : '';
-    if (off) off.style.display = this.muted ? ''     : 'none';
-    if (btn) btn.classList.toggle('muted', this.muted);
+_applyMute() {
+  if (this.audio) {
+    this.audio.volume = this.muted ? 0 : this.volume * 0.7;
+    if (this.muted) this.audio.pause();
+    else this.audio.play().catch(() => {});
   }
+  if (this.ambient) {
+    this.ambient.volume = this.muted ? 0 : this.volume * 0.4;
+    if (this.muted) this.ambient.pause();
+    else this.ambient.play().catch(() => {});
+  }
+  const on  = document.getElementById('icon-sound-on');
+  const off = document.getElementById('icon-sound-off');
+  const btn = document.getElementById('sound-toggle');
+  if (on)  on.style.display  = this.muted ? 'none' : '';
+  if (off) off.style.display = this.muted ? ''     : 'none';
+  if (btn) btn.classList.toggle('muted', this.muted);
+}
 
   _bindUI() {
     const btn = document.getElementById('sound-toggle');
